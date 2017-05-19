@@ -172,7 +172,7 @@ void TIM2_Configuration(void)
      
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
     TIM_TimeBaseStructure.TIM_Prescaler = 71;
-    TIM_TimeBaseStructure.TIM_Period = 200;
+    TIM_TimeBaseStructure.TIM_Period = 135;
     TIM_TimeBaseStructure.TIM_ClockDivision = 0;
     TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
@@ -237,7 +237,7 @@ void ADC_Configuration(void)
     ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
     ADC_InitStructure.ADC_NbrOfChannel = 1;               
     ADC_Init(ADC1, &ADC_InitStructure); 
-    RCC_ADCCLKConfig(RCC_PCLK2_Div6);
+    RCC_ADCCLKConfig(RCC_PCLK2_Div8);
     ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_239Cycles5);	  
     ADC_DMACmd(ADC1, ENABLE); 
     ADC_Cmd(ADC1, ENABLE);	

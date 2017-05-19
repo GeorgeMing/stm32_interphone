@@ -80,8 +80,8 @@ int main(void)
 		printf(" nrf fail\r\n");
 	}
 	NRF_RX_Mode();
-//    TX_FLAG = 0;
-//	Dac1_Set_Vol(2500);
+    TX_FLAG = 0;
+	Dac1_Set_Vol(2500);
     
 	while (1)
 	{
@@ -143,13 +143,17 @@ int main(void)
                 {		
 //                    printf("rx\r\n");
                     ADC_ConvertedValue = rxbuf[0] << 4;
-                    Dac1_Set_Vol(ADC_ConvertedValue);
+//                    Dac1_Set_Vol(ADC_ConvertedValue);
+                    DAC_SetChannel1Data(DAC_Align_12b_R,ADC_ConvertedValue);
                     ADC_ConvertedValue = rxbuf[1] << 4;
-                    Dac1_Set_Vol(ADC_ConvertedValue);
+//                    Dac1_Set_Vol(ADC_ConvertedValue);
+                    DAC_SetChannel1Data(DAC_Align_12b_R,ADC_ConvertedValue);
                     ADC_ConvertedValue = rxbuf[2] << 4;
-                    Dac1_Set_Vol(ADC_ConvertedValue);
+//                    Dac1_Set_Vol(ADC_ConvertedValue);
+                    DAC_SetChannel1Data(DAC_Align_12b_R,ADC_ConvertedValue);
                     ADC_ConvertedValue = rxbuf[3] << 4;
-                    Dac1_Set_Vol(ADC_ConvertedValue);
+//                    Dac1_Set_Vol(ADC_ConvertedValue);
+                    DAC_SetChannel1Data(DAC_Align_12b_R,ADC_ConvertedValue);
                     break;
                 }
                 case ERROR:
