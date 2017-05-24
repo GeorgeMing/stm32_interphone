@@ -26,18 +26,23 @@
 /* Includes ------------------------------------------------------------------*/
 #include<string.h>
 #include "stm32f10x_it.h"
+#include "usart.h"
 #include "bsp_spi_nrf.h"
-#include "bsp_dac.h"
-#include "bsp_usart1.h"
+#include "List.h"
 #define uchar unsigned char
 #define uint unsigned int
-extern char TXFLAG;
 char uartBuf[100];//存指令
 uchar bufNum = 0;//指令字符位置
 extern int uartComm;//指令标志位
 extern __IO uint16_t ADC_ConvertedValue;
 extern u8 txbuf[4];
+extern char *carno;
+extern u8 TX_ADDRESS[TX_ADR_WIDTH];  //发送地址
+extern u8 RX_ADDRESS[RX_ADR_WIDTH];//本车地址
+extern List carinfo;
+char saycarno[10];
 int timeIRQNum = 0;
+
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
   */
@@ -170,6 +175,19 @@ void SysTick_Handler(void)
   * @}
   */ 
 
+void sounrfaddr(Item item)
+{
+    int i;
+    if(strcmp(item.carno, saycarno) == 0){
+        TX_ADDRESS[0] = item.nrfaddr[0];
+        TX_ADDRESS[1] = item.nrfaddr[1];
+        TX_ADDRESS[2] = item.nrfaddr[2];
+        TX_ADDRESS[3] = item.nrfaddr[3];
+        TX_ADDRESS[4] = item.nrfaddr[4];
+    }
+    for(i = 0; i < 10; i++)saycarno[i] = ' ';
+}
+
 /*
 *-1：无指令
 *1：open指令
@@ -182,7 +200,9 @@ void SysTick_Handler(void)
 void USART1_IRQHandler(void)
 {
 	uint8_t ch;
-	char uartBufTemp[100];
+    int num;
+	char uartBufTemp[50];
+    char uartBufTemp2[50];
     if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
 	{ 	
 		//ch = USART1->DR;
@@ -199,8 +219,29 @@ void USART1_IRQHandler(void)
 			{
 				strcpy(uartBufTemp, uartBuf);
 				uartBufTemp[10] = '\0';
-				if(strcmp((const char*)uartBufTemp, "set_carno=")==0)uartComm = 2;
-				if(strcmp((const char*)uartBufTemp, "say_carno=")==0)uartComm = 4;
+				if(strcmp((const char*)uartBufTemp, "set_carno=")==0){
+                    uartComm = 2;
+                    num = 10;
+                    while(uartBuf[num]!='\0')
+                    {
+                        uartBufTemp2[num-10] = uartBuf[num];
+                        num++;
+                    }
+                    uartBufTemp2[num-10] = '\0';
+                    carno = uartBufTemp2;
+                }
+				if(strcmp((const char*)uartBufTemp, "say_carno=")==0){
+                    uartComm = 4;
+                    num = 10;
+                    while(uartBuf[num]!='\0')
+                    {
+                        uartBufTemp2[num-10] = uartBuf[num];
+                        num++;
+                    }
+                    uartBufTemp2[num-10] = '\0';
+                    strcpy(saycarno, uartBufTemp2);
+                    Traverse(&carinfo, sounrfaddr);
+                }
 			}
 			bufNum = 0;
 		}
@@ -215,6 +256,61 @@ void USART1_IRQHandler(void)
 		}
 	}  
 }
+
+void USART2_IRQHandler(void)
+{
+	uint8_t ch;
+    Item tempCarInfo;
+    int num = 6;
+    int temp3num = 0;
+	char uartBufTemp[50];
+    char uartBufTemp2[50];
+    if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
+	{ 	
+		//ch = USART1->DR;
+        ch = USART_ReceiveData(USART2);
+		if(ch == '#')//指令判断
+		{
+			uartBuf[bufNum] = '\0';
+			bufNum = 0;
+			if(strcmp((const char*)uartBuf, "select_car")==0)
+            {
+                 USART_printf(USART2, (uint8_t*)"carno=EAT778!%c%c%c%c%c!#",
+                              RX_ADDRESS[0], RX_ADDRESS[1], RX_ADDRESS[2], RX_ADDRESS[3], RX_ADDRESS[4]);
+            }
+            else
+            {
+                strcpy(uartBufTemp, uartBuf);
+				uartBufTemp[6] = '\0';
+				if(strcmp((const char*)uartBufTemp, "carno=")==0){
+                    while(uartBuf[num]!='!'){uartBufTemp2[num-6] = uartBuf[num];num++;}
+                    uartBufTemp2[num-6] = '#';
+                    uartBufTemp2[num-6+1] = '\0';
+//                    USART_printf(USART1, (uint8_t*)uartBufTemp2);
+                    uartBufTemp2[num-6] = '\0';//carno
+                    strcpy(tempCarInfo.carno, uartBufTemp2);
+                    num++;
+                    while(uartBuf[num]!='!' && temp3num<5)
+                    {
+                        tempCarInfo.nrfaddr[temp3num] = uartBuf[num];
+                        num++;temp3num++;
+                    }
+                    AddItem(tempCarInfo, &carinfo);
+                }
+            }
+		}
+		else if(bufNum < 100)
+		{
+			uartBuf[bufNum] = ch;
+			bufNum++;
+		}
+		else
+		{
+			bufNum = 0;
+		}
+	}  
+}
+
 void TIM2_IRQHandler(void)   
 {                      
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)  
@@ -225,7 +321,6 @@ void TIM2_IRQHandler(void)
         else timeIRQNum++;
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     }          
-}  
-
+} 
 
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

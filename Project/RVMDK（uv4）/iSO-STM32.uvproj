@@ -374,7 +374,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD, USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Libraries\CMSIS;..\..\User;..\..\Libraries\FWlib\inc;..\..\User\usart;..\..\User\adc;..\..\User\nrf;..\..\User\dac</IncludePath>
+              <IncludePath>..\..\Libraries\CMSIS;..\..\User;..\..\Libraries\FWlib\inc;..\..\User\system;..\..\User\adc;..\..\User\dac;..\..\User\nrf</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -599,11 +599,6 @@
               <FilePath>..\..\User\stm32f10x_it.h</FilePath>
             </File>
             <File>
-              <FileName>bsp_usart1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\usart\bsp_usart1.c</FilePath>
-            </File>
-            <File>
               <FileName>bsp_adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\adc\bsp_adc.c</FilePath>
@@ -611,7 +606,7 @@
             <File>
               <FileName>bsp_nrf.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\User\bsp_nrf.c</FilePath>
+              <FilePath>..\..\User\nrf\bsp_nrf.c</FilePath>
             </File>
             <File>
               <FileName>bsp_dac.c</FileName>
@@ -627,6 +622,26 @@
               <FileName>readme.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Doc\readme.txt</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>SYSTEM</GroupName>
+          <Files>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\system\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\system\usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>List.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\system\List.c</FilePath>
             </File>
           </Files>
         </Group>

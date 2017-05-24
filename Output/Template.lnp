@@ -27,10 +27,12 @@
 "..\..\output\stm32f10x_wwdg.o"
 "..\..\output\main.o"
 "..\..\output\stm32f10x_it.o"
-"..\..\output\bsp_usart1.o"
 "..\..\output\bsp_adc.o"
 "..\..\output\bsp_nrf.o"
 "..\..\output\bsp_dac.o"
+"..\..\output\delay.o"
+"..\..\output\usart.o"
+"..\..\output\list.o"
 --library_type=microlib --strict --scatter "..\..\Output\Template.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

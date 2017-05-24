@@ -28,8 +28,12 @@
 ..\..\output\main.o: ..\..\Libraries\FWlib\inc\stm32f10x_usart.h
 ..\..\output\main.o: ..\..\Libraries\FWlib\inc\stm32f10x_wwdg.h
 ..\..\output\main.o: ..\..\Libraries\FWlib\inc\misc.h
-..\..\output\main.o: ..\..\User\usart\bsp_usart1.h
+..\..\output\main.o: ..\..\User\system\usart.h
 ..\..\output\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-..\..\output\main.o: ..\..\User\nrf\bsp_spi_nrf.h
 ..\..\output\main.o: ..\..\User\adc\bsp_adc.h
 ..\..\output\main.o: ..\..\User\dac\bsp_dac.h
+..\..\output\main.o: ..\..\User\nrf\bsp_spi_nrf.h
+..\..\output\main.o: ..\..\User\system\List.h
+..\..\output\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+..\..\output\main.o: ..\..\User\system\delay.h
+..\..\output\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h

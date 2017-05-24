@@ -15,12 +15,12 @@
   ******************************************************************************
   */ 
 #include "bsp_spi_nrf.h"
-#include "bsp_usart1.h"
+#include "usart.h"
 
  u8 RX_BUF[RX_PLOAD_WIDTH];		//接收数据缓存
  u8 TX_BUF[TX_PLOAD_WIDTH];		//发射数据缓存
- u8 TX_ADDRESS[TX_ADR_WIDTH] = {0x34,0x43,0x10,0x10,0x01};  // 定义一个静态发送地址
- u8 RX_ADDRESS[RX_ADR_WIDTH] = {0x34,0x43,0x10,0x10,0x01};
+ extern u8 TX_ADDRESS[TX_ADR_WIDTH];  // 定义一个静态发送地址
+ extern u8 RX_ADDRESS[RX_ADR_WIDTH];
 
 extern void Delay(__IO u32 nCount);
 //{

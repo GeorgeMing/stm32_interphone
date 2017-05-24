@@ -1,4 +1,4 @@
-..\..\output\bsp_nrf.o: ..\..\User\bsp_nrf.c
+..\..\output\bsp_nrf.o: ..\..\User\nrf\bsp_nrf.c
 ..\..\output\bsp_nrf.o: ..\..\User\nrf\bsp_spi_nrf.h
 ..\..\output\bsp_nrf.o: ..\..\Libraries\CMSIS\stm32f10x.h
 ..\..\output\bsp_nrf.o: ..\..\Libraries\CMSIS\core_cm3.h
@@ -29,5 +29,5 @@
 ..\..\output\bsp_nrf.o: ..\..\Libraries\FWlib\inc\stm32f10x_usart.h
 ..\..\output\bsp_nrf.o: ..\..\Libraries\FWlib\inc\stm32f10x_wwdg.h
 ..\..\output\bsp_nrf.o: ..\..\Libraries\FWlib\inc\misc.h
-..\..\output\bsp_nrf.o: ..\..\User\usart\bsp_usart1.h
+..\..\output\bsp_nrf.o: ..\..\User\system\usart.h
 ..\..\output\bsp_nrf.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
