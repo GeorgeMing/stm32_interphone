@@ -45,13 +45,13 @@ void USART2_Config(void)
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
     
     /* USART1 GPIO config */
-    /* Configure USART1 Tx (PA.09) as alternate function push-pull */
+    /* Configure USART1 Tx (PA.02) as alternate function push-pull */
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    /* Configure USART1 Rx (PA.10) as input floating */
+    /* Configure USART1 Rx (PA.03) as input floating */
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
@@ -156,6 +156,13 @@ void USART_printf( USART_TypeDef* USARTx, uint8_t *Data, ... )
 				}
 				Data++;
 				break;
+            case 'c':
+                for ( s = buf; *s; s++ )
+				{
+					USART_SendData( USARTx, *s );
+					while ( USART_GetFlagStatus( USARTx, USART_FLAG_TC ) == RESET )
+						;
+				}
 			default:
 				Data++;
 				break;

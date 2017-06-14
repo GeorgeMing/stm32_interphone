@@ -9,8 +9,8 @@
 
 u8 status;
 int uartComm;//指令判断
-char *carno;//本车车牌
-u8 nrfaddr[] = {0x34,0x43,0x10,0x10,0x01};//本车nrf地址
+char carno[10];//本车车牌
+u8 nrfaddr[] = {0x34,0x43,0x10,0x10,0x02};//本车nrf地址
 u8 TX_ADDRESS[TX_ADR_WIDTH];  //发送地址
 u8 RX_ADDRESS[RX_ADR_WIDTH];//本车地址
 u8 txbuf[4];	 
@@ -19,6 +19,7 @@ u8 TX_FLAG = 0;
 int uartComm;
 List carinfo;
 extern __IO uint16_t ADC_ConvertedValue;
+extern char selectCarFlag;
 float ADC_ConvertedValueLocal; 
 
 void showmovies(Item item);
@@ -88,8 +89,11 @@ int main(void)
                 break;
             case 3://select
                 USART_printf(USART2, (uint8_t*)"select_car#");
+                EmptyTheList(&carinfo);
                 delay_ms(1000);
                 delay_ms(1000);
+                selectCarFlag = 0;
+                printf("success\r\n");
                 if(!ListIsEmpty((const List *)carinfo))
                     Traverse(&carinfo, showmovies);
                 uartComm = -1;
@@ -127,24 +131,19 @@ int main(void)
             {
                 case RX_DR:
                 {		
-//                    printf("rx\r\n");
-                    ADC_ConvertedValue = rxbuf[0] << 4;
-//                    Dac1_Set_Vol(ADC_ConvertedValue);
+                    //printf("rx\r\n");
+                    ADC_ConvertedValue = rxbuf[0] << 4;                 
                     DAC_SetChannel1Data(DAC_Align_12b_R,ADC_ConvertedValue);
                     ADC_ConvertedValue = rxbuf[1] << 4;
-//                    Dac1_Set_Vol(ADC_ConvertedValue);
                     DAC_SetChannel1Data(DAC_Align_12b_R,ADC_ConvertedValue);
                     ADC_ConvertedValue = rxbuf[2] << 4;
-//                    Dac1_Set_Vol(ADC_ConvertedValue);
                     DAC_SetChannel1Data(DAC_Align_12b_R,ADC_ConvertedValue);
                     ADC_ConvertedValue = rxbuf[3] << 4;
-//                    Dac1_Set_Vol(ADC_ConvertedValue);
                     DAC_SetChannel1Data(DAC_Align_12b_R,ADC_ConvertedValue);
                     break;
                 }
                 case ERROR:
                 {
-//                    printf("error\r\n");
                     break;  
                 }                    
             }

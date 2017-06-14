@@ -36,12 +36,13 @@ uchar bufNum = 0;//指令字符位置
 extern int uartComm;//指令标志位
 extern __IO uint16_t ADC_ConvertedValue;
 extern u8 txbuf[4];
-extern char *carno;
+extern char carno[10];
 extern u8 TX_ADDRESS[TX_ADR_WIDTH];  //发送地址
 extern u8 RX_ADDRESS[RX_ADR_WIDTH];//本车地址
 extern List carinfo;
 char saycarno[10];
 int timeIRQNum = 0;
+char selectCarFlag;
 
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
@@ -228,7 +229,7 @@ void USART1_IRQHandler(void)
                         num++;
                     }
                     uartBufTemp2[num-10] = '\0';
-                    carno = uartBufTemp2;
+                    strcpy(carno, uartBufTemp2);
                 }
 				if(strcmp((const char*)uartBufTemp, "say_carno=")==0){
                     uartComm = 4;
@@ -265,24 +266,37 @@ void USART2_IRQHandler(void)
     int temp3num = 0;
 	char uartBufTemp[50];
     char uartBufTemp2[50];
+    Node *pnode = carinfo;
+    char flag = 0;
+    selectCarFlag = 0;
     if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
 	{ 	
 		//ch = USART1->DR;
         ch = USART_ReceiveData(USART2);
 		if(ch == '#')//指令判断
 		{
+//            printf("uart2shoudao\r\n");
 			uartBuf[bufNum] = '\0';
 			bufNum = 0;
 			if(strcmp((const char*)uartBuf, "select_car")==0)
             {
-                 USART_printf(USART2, (uint8_t*)"carno=EAT778!%c%c%c%c%c!#",
-                              RX_ADDRESS[0], RX_ADDRESS[1], RX_ADDRESS[2], RX_ADDRESS[3], RX_ADDRESS[4]);
+                selectCarFlag = 1;
+                USART_printf(USART2, (uint8_t*)"carno=%s!", carno);
+                for(num = 0; num < 5; num++)
+                {
+                    USART_SendData( USART2, RX_ADDRESS[num] );
+					while ( USART_GetFlagStatus( USART2, USART_FLAG_TC ) == RESET );
+                }
+                USART_SendData( USART2, '!' );
+					while ( USART_GetFlagStatus( USART2, USART_FLAG_TC ) == RESET );
+                USART_SendData( USART2, '#' );
+					while ( USART_GetFlagStatus( USART2, USART_FLAG_TC ) == RESET );
             }
             else
             {
                 strcpy(uartBufTemp, uartBuf);
 				uartBufTemp[6] = '\0';
-				if(strcmp((const char*)uartBufTemp, "carno=")==0){
+				if(strcmp((const char*)uartBufTemp, "carno=")==0 && selectCarFlag==1){
                     while(uartBuf[num]!='!'){uartBufTemp2[num-6] = uartBuf[num];num++;}
                     uartBufTemp2[num-6] = '#';
                     uartBufTemp2[num-6+1] = '\0';
@@ -295,7 +309,14 @@ void USART2_IRQHandler(void)
                         tempCarInfo.nrfaddr[temp3num] = uartBuf[num];
                         num++;temp3num++;
                     }
-                    AddItem(tempCarInfo, &carinfo);
+                    
+                    while (pnode != NULL)
+                    {
+                        if(strcmp(pnode->item.carno, uartBufTemp2) == 0){ flag = 1;break;}
+                        pnode = pnode->next;
+                    }
+                    if(flag == 0)
+                        AddItem(tempCarInfo, &carinfo);
                 }
             }
 		}
